@@ -1,37 +1,31 @@
 library(readxl)
+library(tidyverse)
+library(stringr)
 data <- read_excel("data/data.xlsx")
-suppressPackageStartupMessages(library(tidyverse))
+subset <- data %>% 
+  select(starts_with("commodity")) 
+ 
+subset$commodity <- paste(subset$commodity_005_g,subset$commodity_005_c, subset$commodity_005_g,
+                         subset$commodity_005_c, subset$commodity_005_p, subset$'commodity_005_f/vegetables', 
+                         subset$'commodity_005_f/goldenberry',subset$'commodity_005_f/banana',     
+                         subset$'commodity_005_f/tomato',subset$'commodity_005_f/chili',      
+                         subset$'commodity_005_f/carrot',subset$'commodity_005_f/onion',      
+                         subset$'commodity_005_f/cabbage',subset$'commodity_005_f/lettuce',sep=", ")
+subset$commodity <- gsub(x=subset$commodity, pattern="NA*", replacement = "", perl = TRUE)
+subset$commodity <- gsub(x=subset$commodity, pattern=",*", replacement = "", perl = TRUE)
+subset$commodity <- str_squish(subset$commodity)
+commodity <- as.data.frame(str_split_fixed(subset$commodity, " ", 2))
+commodity$V1 <- gsub(x=commodity$V1, pattern="rice", replacement = "rice", fixed = FALSE)
+types_of_rice <- c("rice_ir64" ,            "rice_red_ir64" ,        "rice_whitelocal"  ,    
+"rice_whitelocal_ir64",  "rice_red_whitelocal",   "rice_black_ir64" ,     
+"rice_red_black_ir64" ,"rice_black"    ,        "rice_black_whitelocal",
+"rice_red")
+for (i in 1:length(types_of_rice)) {
+  commodity$V1 <- gsub(x=commodity$V1, pattern=types_of_rice[i],replacement = "rice")
+}
 
-a <- tibble(a=runif(4),b=letters[1:4], p=list(seq(.01,1,.01))) %>%
-  unnest() %>%
-  mutate(q = ifelse(a>p,1,0),
-         label = paste(b,scales::percent(a)),
-         x = ((p-0.01)*100)%%10,
-         y = ((p-0.01)*100)%/%10) 
-  ggplot() +
-  geom_point(mapping=aes(x=x, y=y, color = q, fill=q, shape = factor(q))) +
-  scale_y_continuous(name="") +
-  scale_x_continuous(name="") +
-  scale_shape_manual(values = c(25,24)) +
-  guides(fill=FALSE, shape=FALSE, color=FALSE) +
-  facet_wrap(~label, nrow = 2) +
-  theme_void()
-data <- data %>% 
-  select(`_0/sex_012`) %>% 
-  mutate(p=list(seq(.01,1,.01))) %>%
-  unnest() %>% 
-  mutate(x = ((p-0.01)*100)%%10,
-         y = ((p-0.01)*100)%/%10)
-
+data$commodity <- commodity$V1
+unique(data$commodity)
 data %>% 
-  ggplot() +
-  geom_point(mapping=aes(x=x, y=y, color=`_0/sex_012`)) +
-  scale_y_continuous(name="") +
-  scale_x_continuous(name="") +
-  scale_shape_manual(values = c(25,24)) +
-  guides(fill=FALSE, shape=FALSE, color=FALSE) +
-  theme_void()
-
-data %>% 
-  group_by(`_0/sex_012`) %>% 
-  summarise(count=n())
+  group_by(commodity) %>% 
+  summarise(n=n(nrow()))
