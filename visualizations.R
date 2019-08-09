@@ -26,6 +26,4 @@ for (i in 1:length(types_of_rice)) {
 
 data$commodity <- commodity$V1
 unique(data$commodity)
-data %>% 
-  group_by(commodity) %>% 
-  summarise(n=n(nrow()))
+
