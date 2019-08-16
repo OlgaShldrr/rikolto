@@ -3,32 +3,24 @@ library(extrafont)
 library(tidyverse)
 library(readxl)
 library(flexdashboard)
-data <- read_excel("data/data.xlsx")
+data <- read_csv("data/data.csv")
 counts <- data %>% 
   group_by(commodity, `_0/sex_012`) %>% 
   summarise(n=n()) %>% 
   mutate(freq = round((n / sum(n))*100))
-font_import()
+
 counts <- na.omit(counts)
-y
-y
-# check that Font Awesome is imported
-fonts()[grep("Awesome", fonts())]
-# [1] "FontAwesome"
-# this should be fine for Mac OSX
-loadfonts()
-# use this if things look odd in RStudio under Windows
-loadfonts(device = "win")
+
 count <- as.vector(counts$freq)
 
 waffle(c(Male = count[1], Female = count[2], Uknown = count[3]), rows = 5, title = "Gender Distribution of Farmers", colors = c("#9eab05","#c99700", "#9595d2"))
 
 
 #facets by type of crop
-
+library(tidyverse)
 library(hrbrthemes)
 library(waffle)
-library(tidyverse)
+
 
 tibble(
   parts = factor(rep(month.abb[1:3], 3), levels=month.abb[1:3]),
@@ -36,7 +28,7 @@ tibble(
   fct = c(rep("Thing 1", 3), rep("Thing 2", 3), rep("Thing 3", 3))
 ) -> xdf
 library(ggthemes)
-ggplot(counts, aes(fill=`_0/sex_012`, values=freq)) +
+waffle <- ggplot(counts, aes(fill=`_0/sex_012`, values=freq)) +
   geom_waffle(color = "white", size=1.125, n_rows = 5) +
   facet_wrap(~commodity, ncol=1) +
   scale_x_discrete(expand=c(0,0)) +
@@ -57,7 +49,7 @@ counts_age <- data %>%
 subset_age <- data %>% 
   select(commodity, `_0/age_011`)
 subset_age <- na.omit(subset_age)
-ggplot(subset_age, aes(commodity, fill = as.factor(`_0/age_011`))) + geom_bar()+
+age <- ggplot(subset_age, aes(commodity, fill = as.factor(`_0/age_011`))) + geom_bar()+
   labs(title = "Farmers by age and type of commodity", x = "Types of Commodity", y = "Count of Farmers")
 
 
