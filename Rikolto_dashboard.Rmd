@@ -1,0 +1,48 @@
+---
+title: "Multiple Pages"
+output: flexdashboard::flex_dashboard
+---
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+source("R/rikolto.R")
+source("waffle.R")
+```
+
+
+Map
+=====================================  
+ 
+### Rikolto Participants
+    
+```{r}
+map
+```
+
+Demographics {data-orientation=rows}
+=====================================     
+   
+Row {data-height=800}
+-------------------------------------
+
+### Counts of farmers by organization
+
+```{r}
+waffle
+```
+
+Row {data-height=200}
+-------------------------------------
+   
+### Age distribution
+
+```{r}
+age
+```   
+    
+### Gender distribution
+
+```{r}
+
+```

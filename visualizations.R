@@ -26,4 +26,5 @@ for (i in 1:length(types_of_rice)) {
 
 data$commodity <- commodity$V1
 unique(data$commodity)
+write.csv(data, "data/data.csv", row.names = FALSE)
 
