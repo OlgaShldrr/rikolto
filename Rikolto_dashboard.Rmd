@@ -8,6 +8,8 @@ output: flexdashboard::flex_dashboard
 library(flexdashboard)
 source("R/rikolto.R")
 source("waffle.R")
+source("ProductionCommercialization.R")
+library(DT)
 ```
 
 
@@ -20,28 +22,163 @@ Map
 map
 ```
 
-Demographics {data-orientation=rows}
+Demographics 
+=====================================     
+    
+Column {data-width=600}
+-------------------------------------
+    
+### 
+    
+```{r}
+ggplotly(prod_org)
+```
+   
+Column {data-width=400}
+-------------------------------------
+   
+### Chart 2
+
+```{r}
+counts %>% 
+    DT::datatable()
+```   
+ 
+### Chart 3
+    
+```{r}
+ggplotly(age)
+```
+
+
+Production & Commercialization {data-orientation=rows}
 =====================================     
    
 Row {data-height=800}
 -------------------------------------
 
-### Counts of farmers by organization
+###
 
 ```{r}
-waffle
+productivity %>% 
+    DT::datatable()
+```
+
+###
+
+```{r}
+
 ```
 
 Row {data-height=200}
 -------------------------------------
    
-### Age distribution
+### 
 
 ```{r}
-age
+
 ```   
     
-### Gender distribution
+### 
+
+```{r}
+
+```
+
+Planning & Investment {data-orientation=rows}
+=====================================     
+   
+Row {data-height=800}
+-------------------------------------
+
+###
+
+```{r}
+
+```
+
+###
+
+```{r}
+
+```
+
+Row {data-height=200}
+-------------------------------------
+   
+### 
+
+```{r}
+
+```   
+    
+### 
+
+```{r}
+
+```
+
+Inclusiveness & Gender {data-orientation=rows}
+=====================================     
+   
+Row {data-height=800}
+-------------------------------------
+
+###
+
+```{r}
+
+```
+
+###
+
+```{r}
+
+```
+
+Row {data-height=200}
+-------------------------------------
+   
+### 
+
+```{r}
+
+```   
+    
+### 
+
+```{r}
+
+```
+
+Resilience {data-orientation=rows}
+=====================================     
+   
+Row {data-height=800}
+-------------------------------------
+
+###
+
+```{r}
+
+```
+
+###
+
+```{r}
+
+```
+
+Row {data-height=200}
+-------------------------------------
+   
+### 
+
+```{r}
+
+```   
+    
+### 
 
 ```{r}
 

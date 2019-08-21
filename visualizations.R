@@ -16,9 +16,9 @@ subset$commodity <- gsub(x=subset$commodity, pattern=",*", replacement = "", per
 subset$commodity <- str_squish(subset$commodity)
 commodity <- as.data.frame(str_split_fixed(subset$commodity, " ", 2))
 commodity$V1 <- gsub(x=commodity$V1, pattern="rice", replacement = "rice", fixed = FALSE)
-types_of_rice <- c("rice_ir64" ,            "rice_red_ir64" ,        "rice_whitelocal"  ,    
-"rice_whitelocal_ir64",  "rice_red_whitelocal",   "rice_black_ir64" ,     
-"rice_red_black_ir64" ,"rice_black"    ,        "rice_black_whitelocal",
+types_of_rice <- c("rice_ir64","rice_red_ir64","rice_whitelocal",
+"rice_whitelocal_ir64","rice_red_whitelocal","rice_black_ir64",
+"rice_red_black_ir64","rice_black","rice_black_whitelocal",
 "rice_red")
 for (i in 1:length(types_of_rice)) {
   commodity$V1 <- gsub(x=commodity$V1, pattern=types_of_rice[i],replacement = "rice")

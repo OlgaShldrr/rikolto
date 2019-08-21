@@ -13,33 +13,33 @@ counts <- na.omit(counts)
 
 count <- as.vector(counts$freq)
 
-waffle(c(Male = count[1], Female = count[2], Uknown = count[3]), rows = 5, title = "Gender Distribution of Farmers", colors = c("#9eab05","#c99700", "#9595d2"))
-
-
-#facets by type of crop
-library(tidyverse)
-library(hrbrthemes)
-library(waffle)
-
-
-tibble(
-  parts = factor(rep(month.abb[1:3], 3), levels=month.abb[1:3]),
-  values = c(10, 20, 30, 6, 14, 40, 30, 20, 10),
-  fct = c(rep("Thing 1", 3), rep("Thing 2", 3), rep("Thing 3", 3))
-) -> xdf
-library(ggthemes)
-waffle <- ggplot(counts, aes(fill=`_0/sex_012`, values=freq)) +
-  geom_waffle(color = "white", size=1.125, n_rows = 5) +
-  facet_wrap(~commodity, ncol=1) +
-  scale_x_discrete(expand=c(0,0)) +
-  scale_y_discrete(expand=c(0,0)) +
-  ggthemes::scale_fill_tableau(name=NULL) +
-  coord_equal() +
-  labs(
-    title = "Farmers by gender and type of commodity"
-  ) +
-  theme_ipsum_rc(grid="") +
-  theme_enhance_waffle()
+#waffle <- waffle(c(Male = count[1], Female = count[2], Uknown = count[3]), rows = 5, title = "Gender Distribution of Farmers", colors = c("#9eab05","#c99700", "#9595d2"))
+#
+#
+##facets by type of crop
+#library(tidyverse)
+#library(hrbrthemes)
+#library(waffle)
+#
+#
+#tibble(
+#  parts = factor(rep(month.abb[1:3], 3), levels=month.abb[1:3]),
+#  values = c(10, 20, 30, 6, 14, 40, 30, 20, 10),
+#  fct = c(rep("Thing 1", 3), rep("Thing 2", 3), rep("Thing 3", 3))
+#) -> xdf
+#library(ggthemes)
+#waffle <- ggplot(counts, aes(fill=`_0/sex_012`, values=freq)) +
+#  geom_waffle(color = "white", size=1.125, n_rows = 5) +
+#  facet_wrap(~commodity, ncol=1) +
+#  scale_x_discrete(expand=c(0,0)) +
+#  scale_y_discrete(expand=c(0,0)) +
+#  ggthemes::scale_fill_tableau(name=NULL) +
+#  coord_equal() +
+#  labs(
+#    title = ""
+#  ) +
+#  theme_ipsum_rc(grid="") +
+#  theme_enhance_waffle()
 
 counts_age <- data %>% 
   group_by(commodity,`_0/age_011`) %>% 
