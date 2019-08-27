@@ -9,6 +9,9 @@ library(flexdashboard)
 source("R/rikolto.R")
 source("waffle.R")
 source("ProductionCommercialization.R")
+source("PlanningInvestment.R")
+source("Resilience.R")
+source("Inclusion.R")
 library(DT)
 ```
 
@@ -60,8 +63,7 @@ Row
 ### Productivity by farmer organization and commodity
 
 ```{r}
-productivity_table %>% 
-    DT::datatable()
+farmland_plot
 ```
 
 ### Productivity Distribution by commodity
@@ -88,98 +90,89 @@ ggplotly(l)
 Planning & Investment {data-orientation=rows}
 =====================================     
    
-Row {data-height=800}
+Row 
 -------------------------------------
 
-###
+### Drivers of production planning
 
 ```{r}
-
+ggplotly(drivers_plot)
 ```
 
-###
+### Sources of credit
 
 ```{r}
-
+access_plot
 ```
 
-Row {data-height=200}
+Row 
 -------------------------------------
    
-### 
+### Reasons why no access to credit
 
 ```{r}
-
+why_no_acess %>% 
+    DT::datatable()
 ```   
     
-### 
+### Investment drivers
 
 ```{r}
-
+ggplotly(k)
 ```
 
-Inclusiveness & Gender {data-orientation=rows}
+Inclusiveness & Gender 
 =====================================     
    
-Row {data-height=800}
+Column
 -------------------------------------
 
-###
+### Participation in the value chain
 
 ```{r}
-
+ggplotly(training_plot)
 ```
 
-###
+### Participation in the value chain - opinion by age and sex
 
 ```{r}
-
+opinion_plot
 ```
 
-Row {data-height=200}
+Column
 -------------------------------------
    
 ### 
 
 ```{r}
-
-```   
-    
-### 
-
-```{r}
-
+ggplotly(decisions_plot)
 ```
 
-Resilience {data-orientation=rows}
+Resilience 
 =====================================     
    
-Row {data-height=800}
+Column 
 -------------------------------------
 
-###
+### Access to Information
 
 ```{r}
-
+ggplotly(info_plot)
 ```
 
 ###
 
 ```{r}
-
+ggplotly(strategy)
 ```
 
-Row {data-height=200}
+Column
 -------------------------------------
    
-### 
+### Intensity and frequency of shock
 
 ```{r}
-
+shock %>% 
+    DT::datatable()
 ```   
     
-### 
-
-```{r}
-
-```

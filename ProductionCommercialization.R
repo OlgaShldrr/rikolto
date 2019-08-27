@@ -74,7 +74,12 @@ farmland$x <- gsub(farmland$x, pattern=", NA", replacement = "")
 farmland$x <- as.numeric(farmland$x)
 data$farmland <- farmland$x
 
-
+library(ggridges)
+library(plotly)
+farmland_plot <- ggplot(data, aes(x = farmland, y = commodity, fill = commodity)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none")
 
 
 sold <- data %>% 
