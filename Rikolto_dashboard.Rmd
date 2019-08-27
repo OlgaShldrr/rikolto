@@ -54,35 +54,35 @@ ggplotly(age)
 Production & Commercialization {data-orientation=rows}
 =====================================     
    
-Row {data-height=800}
+Row 
 -------------------------------------
 
-###
+### Productivity by farmer organization and commodity
 
 ```{r}
-productivity %>% 
+productivity_table %>% 
     DT::datatable()
 ```
 
-###
+### Productivity Distribution by commodity
 
 ```{r}
-
+ggplotly(p)
 ```
 
-Row {data-height=200}
+Row 
 -------------------------------------
    
-### 
+### Commercialized share by commodity
 
 ```{r}
-
+ggplotly(commercialization_plot)
 ```   
     
-### 
+### Production by farmer organization 
 
 ```{r}
-
+ggplotly(l)
 ```
 
 Planning & Investment {data-orientation=rows}
