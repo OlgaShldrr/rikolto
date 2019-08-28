@@ -1,11 +1,12 @@
 ---
-title: "Multiple Pages"
+title: "RIKOLTO"
 output: flexdashboard::flex_dashboard
 ---
 
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+source("color.R")
 source("R/rikolto.R")
 source("waffle.R")
 source("ProductionCommercialization.R")
@@ -127,13 +128,13 @@ Inclusiveness & Gender
 Column
 -------------------------------------
 
-### Participation in the value chain
+### Participation in the value chain: Who typically represents the household when trainings are offered?
 
 ```{r}
 ggplotly(training_plot)
 ```
 
-### Participation in the value chain - opinion by age and sex
+### Participation in the value chain - opinion by age and sex: Compared with other members, is your opinion respected/taken into account within your farmer organisation?
 
 ```{r}
 opinion_plot
@@ -142,7 +143,7 @@ opinion_plot
 Column
 -------------------------------------
    
-### 
+### Who controls and decides how the income from the focus crop is used?
 
 ```{r}
 ggplotly(decisions_plot)
