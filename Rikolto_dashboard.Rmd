@@ -7,16 +7,23 @@ output: flexdashboard::flex_dashboard
 ```{r setup, include=FALSE}
 library(flexdashboard)
 source("color.R")
-source("R/rikolto.R")
-source("waffle.R")
+source("map.R")
+source("Demographics.R")
 source("ProductionCommercialization.R")
 source("PlanningInvestment.R")
 source("Resilience.R")
 source("Inclusion.R")
 library(DT)
 ```
-
-
+<style>                     
+.navbar {
+  background-color:#b6bf00;
+  border-color:white;
+}
+.navbar-brand {
+color:black!important;
+}
+</style> 
 Map
 =====================================  
  
@@ -32,26 +39,29 @@ Demographics
 Column {data-width=600}
 -------------------------------------
     
-### 
+### Number of farmers using intensive, intercropping, monocrop and non-intensive rice system (only 1 rice season per year) production type by commodity
     
 ```{r}
-ggplotly(prod_org)
+ggplotly(prod_org) %>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
    
 Column {data-width=400}
 -------------------------------------
    
-### Chart 2
+### Gender counts and ratio by commodity
 
 ```{r}
 counts %>% 
     DT::datatable()
 ```   
  
-### Chart 3
+### Number of farmers less than or equal to 35 years old and number of farmers over 35 years old by commodity
+
     
 ```{r}
-ggplotly(age)
+ggplotly(age) %>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 
@@ -61,31 +71,34 @@ Production & Commercialization {data-orientation=rows}
 Row 
 -------------------------------------
 
-### Productivity by farmer organization and commodity
+### Distribution of sizes of the farmland dedicated to cultivation by commodity
 
 ```{r}
 farmland_plot
 ```
 
-### Productivity Distribution by commodity
+### Distribution of how many tons of commodity farmers produced last year by commodity
 
 ```{r}
-ggplotly(p)
+ggplotly(p)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 Row 
 -------------------------------------
    
-### Commercialized share by commodity
+### Relationaship between tonnes of commodity produced and sold by commodity (click on the commodity on the legend to single it out)
 
 ```{r}
-ggplotly(commercialization_plot)
+ggplotly(commercialization_plot)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```   
     
-### Production by farmer organization 
+### Average response to a question "How many tons of your commodity did you produce last year?" by farmer organization 
 
 ```{r}
-ggplotly(l)
+ggplotly(l)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 Planning & Investment {data-orientation=rows}
@@ -94,13 +107,14 @@ Planning & Investment {data-orientation=rows}
 Row 
 -------------------------------------
 
-### Drivers of production planning
+### Percentage of farmers planning production of their focus crop based on the following aspects (hover over color segments to see the aspects)
 
 ```{r}
-ggplotly(drivers_plot)
+ggplotly(drivers_plot)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
-### Sources of credit
+### Distribution of sources of access to credits or loans
 
 ```{r}
 access_plot
@@ -109,17 +123,18 @@ access_plot
 Row 
 -------------------------------------
    
-### Reasons why no access to credit
+### Number and proportion of farmers listing specific reason for why they did not have access to credits or loans
 
 ```{r}
 why_no_acess %>% 
     DT::datatable()
 ```   
     
-### Investment drivers
+### Number of farmers listing the following aspects that motivate any new investments to improve production of the focus crop
 
 ```{r}
-ggplotly(k)
+ggplotly(k)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 Inclusiveness & Gender 
@@ -128,10 +143,11 @@ Inclusiveness & Gender
 Column
 -------------------------------------
 
-### Participation in the value chain: Who typically represents the household when trainings are offered?
+### Participation in the value chain: Who typically represents the household when trainings are offered by farmer organisation
 
 ```{r}
-ggplotly(training_plot)
+ggplotly(training_plot)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 ### Participation in the value chain - opinion by age and sex: Compared with other members, is your opinion respected/taken into account within your farmer organisation?
@@ -143,10 +159,11 @@ opinion_plot
 Column
 -------------------------------------
    
-### Who controls and decides how the income from the focus crop is used?
+### Average degree of control of decision making on how the income from the focus crop is used by organisation and respondent's gender
 
 ```{r}
-ggplotly(decisions_plot)
+ggplotly(decisions_plot)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 Resilience 
@@ -155,25 +172,28 @@ Resilience
 Column 
 -------------------------------------
 
-### Access to Information
+###  Average frequency of access to various information by commodity (from 0:I have no access to this information to 3:I can access this information any time I want)
 
 ```{r}
-ggplotly(info_plot)
+ggplotly(info_plot)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
-###
+### Distribution of the popularity of shock copying strategies by commodity
 
 ```{r}
-ggplotly(strategy)
+ggplotly(strategy)%>% 
+  config(autosizable=TRUE, fillFrame=TRUE, displayModeBar=FALSE)
 ```
 
 Column
 -------------------------------------
    
-### Intensity and frequency of shock
+### Intensity and frequency of shocks by organisation and commodity
 
 ```{r}
 shock %>% 
-    DT::datatable()
+    DT::datatable(options = list(
+  pageLength = 25))
 ```   
     

@@ -1,6 +1,9 @@
 library(readxl)
 library(tidyverse)
 library(stringr)
+library(ggmap)
+library(naniar)
+
 data <- read_excel("data/data.xlsx")
 subset <- data %>% 
   select(starts_with("commodity")) 
@@ -26,21 +29,26 @@ for (i in 1:length(types_of_rice)) {
 
 data$commodity <- commodity$V1
 unique(data$commodity)
-write.csv(data, "data/data.csv", row.names = FALSE)
+for (i in 1:length(types_of_rice)) {
+  commodity$V1 <- gsub(x=commodity$V1, pattern=types_of_rice[i],replacement = "rice")
+}
 
-#productivity <- data %>% 
-#  select(contains("productivity"), -contains("OUTLIER"), -contains("DISPLAY"))
-#productivity$x <- paste(productivity$`_3/crop_productivity_105_rice`,productivity$`_3/crop_productivity_105_ses`, productivity$`_3/crop_productivity_105_pul`, 
-#           productivity$`_3/crop_productivity_105_coc`,  productivity$`_3/crop_productivity_105_cof`,  productivity$`_3/crop_productivity_105_cin`,
-#          productivity$`_3/crop_productivity_105_veg`,  productivity$`_3/crop_productivity_105_gb`,  productivity$`_3/crop_productivity_105_ba`, 
-#          productivity$`_3/crop_productivity_105_to`,   productivity$`_3/crop_productivity_105_chi`,  productivity$`_3/crop_productivity_105_ca`,  
-#          productivity$`_3/crop_productivity_105_on`,   productivity$`_3/crop_productivity_105_cab`,  productivity$`_3/crop_productivity_105_let` , sep = ", ")
-#productivity$x <- gsub(productivity$x, pattern="NA, ", replacement = "")
-#productivity$x <- gsub(productivity$x, pattern=", NA", replacement = "")
-#productivity$x <- as.numeric(productivity$x)
-#data$productivity <- productivity$x
-#
-#write.csv(data, "data/data.csv", row.names = FALSE)
+data$commodity <- commodity$V1
+unique(data$commodity)
+
+
+
+productivity <- data %>% 
+  select(contains("productivity"), -contains("OUTLIER"), -contains("DISPLAY"))
+productivity$x <- paste(productivity$`_3/crop_productivity_105_rice`,productivity$`_3/crop_productivity_105_ses`, productivity$`_3/crop_productivity_105_pul`, 
+           productivity$`_3/crop_productivity_105_coc`,  productivity$`_3/crop_productivity_105_cof`,  productivity$`_3/crop_productivity_105_cin`,
+          productivity$`_3/crop_productivity_105_veg`,  productivity$`_3/crop_productivity_105_gb`,  productivity$`_3/crop_productivity_105_ba`, 
+          productivity$`_3/crop_productivity_105_to`,   productivity$`_3/crop_productivity_105_chi`,  productivity$`_3/crop_productivity_105_ca`,  
+          productivity$`_3/crop_productivity_105_on`,   productivity$`_3/crop_productivity_105_cab`,  productivity$`_3/crop_productivity_105_let` , sep = ", ")
+productivity$x <- gsub(productivity$x, pattern="NA, ", replacement = "")
+productivity$x <- gsub(productivity$x, pattern=", NA", replacement = "")
+productivity$x <- round(as.numeric(productivity$x), digits = 2)
+data$productivity <- productivity$x
 
 farmland <- data %>%  select(contains("dedicated_farmland"), -contains("OUTLIER"))
 farmland$x <- paste(farmland$`_3/dedicated_farmland_102_rice`,
@@ -60,7 +68,7 @@ farmland$x <- paste(farmland$`_3/dedicated_farmland_102_rice`,
                     farmland$`_3/dedicated_farmland_102_let`, sep=", ")
 farmland$x <- gsub(farmland$x, pattern="NA, ", replacement = "")
 farmland$x <- gsub(farmland$x, pattern=", NA", replacement = "")
-farmland$x <- as.numeric(farmland$x)
+farmland$x <- round(as.numeric(farmland$x), digits=2)
 data$farmland <- farmland$x
 
 sold <- data %>% 
@@ -73,14 +81,8 @@ sold <- data %>%
 sold$x <- paste(sold$sold_107_rice, sold$sold_107_coffee, sold$sold_107_cocoa, sold$sold_107_cinnamon, sep=", ")
 sold$x <- gsub(sold$x, pattern="NA, ", replacement = "")
 sold$x <- gsub(sold$x, pattern=", NA", replacement = "")
-sold$x <- as.numeric(sold$x)
+sold$x <- round(as.numeric(sold$x), digits=2)
 data$sold <- sold$x
-
-
-
-data$share_commercialized <- data$sold/data$production
-data$commodity <- as.factor(data$commodity)
-write.csv(data, "data/data.csv", row.names = FALSE)
 
 production <- data %>% 
   select(contains("production"), -contains("OUTLIER"), -contains("invest"))
@@ -90,71 +92,72 @@ production$x<-paste(production$`_3/crop_production_103_rice`, production$`_3/cro
                     production$`_3/crop_production_103_on`, production$`_3/crop_production_103_cab`, production$`_3/crop_production_103_let`, sep=", ")
 production$x <- gsub(production$x, pattern="NA, ", replacement = "")
 production$x <- gsub(production$x, pattern=", NA", replacement = "")
-production$x <- as.numeric(production$x)
+production$x <- round(as.numeric(production$x), digits=2)
 data$production <- production$x
 
-write.csv(data, "data/data.csv", row.names = FALSE)
+data$share_commercialized <- data$sold/data$production
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="koperasi_", replacement = "")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="organisasi_", replacement = "")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="oraganisasi_", replacement = "")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="lembaga_", replacement = "")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="koerintji_barokah_bersama", replacement = "barokah")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="_", replacement = " ")
+data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="simpatik", replacement = "msa")
 
-#register_google(Sys.getenv("GoogleAPI"))
-#
-##data import and wrangling coffee--------------------
-#
-#coffee <- read_delim("data/01 CSV Legacy - KOPI ALL.csv", 
-#                                      ";", escape_double = FALSE, na = "n/a", trim_ws = TRUE)
-#coffee <- coffee %>% 
-#  select(country_002, starts_with("work_area"), `_0/village_010`, `_3/crop_productivity_104_cof`, `_0/farmer_org_014`, `_0/sex_012`) 
-#coffee$map <- paste(coffee$country_002, coffee$work_area_province, coffee$work_area_ntt, coffee$work_area_sulsel, coffee$work_area_jambi, coffee$`_0/village_010`, sep = ", ")
-#coffee$map <- gsub(x=coffee$map, pattern="NA, ", replacement = "")
-#coordinates <- geocode(coffee$map)
-#coffee <- cbind(coffee, coordinates)
-#coffee <- coffee %>% 
-#  select(productivity =`_3/crop_productivity_104_cof`, gender = `_0/sex_012`, map = map, lon, lat, org = `_0/farmer_org_014`) %>% 
-#  mutate(comm = c("coffee"))
-#
-##data import and wrangling cacao--------------------
-#cacao <- read_excel("data/02 CSV Legacy - KAKAO ALL.xlsx")                                      
-#
-#cacao <- cacao %>% 
-#  select(country_002, starts_with("work_area"), `_0/village_010`, `_3/crop_productivity_104_coc`, `_0/farmer_org_014`, `_0/sex_012`) 
-#cacao$map <- paste(cacao$country_002, cacao$work_area_province, cacao$work_area_ntt, cacao$work_area_sulsel, cacao$work_area_sulbar, cacao$`_0/village_010`, sep = ", ")
-#cacao$map <- gsub(x=cacao$map, pattern="n/a, ", replacement = "")
-#coordinates <- geocode(cacao$map)
-#cacao <- cbind(cacao, coordinates)
-#cacao <- cacao %>% 
-#  select(productivity =`_3/crop_productivity_104_coc`, gender = `_0/sex_012`, map = map, lon, lat, org = `_0/farmer_org_014`) %>% 
-#  mutate(comm = c("cacao"))
-#
-##data import and wrangling cinnamon--------------------
-#cinnamon <- read_delim("data/03 CSV Legacy - KULIT MANIS - ALL.csv", 
-#                                             ";", escape_double = FALSE, trim_ws = TRUE)
-#cinnamon <- cinnamon %>% 
-#  select(country_002, starts_with("work_area"), `_0/village_010`, `_3/crop_productivity_104_cin`, `_0/farmer_org_014`, `_0/sex_012`) 
-#cinnamon$map <- paste(cinnamon$country_002, cinnamon$work_area_province, cinnamon$work_area_jambi, cinnamon$`_0/village_010`, sep = ", ")
-#cinnamon$map <- gsub(x=cinnamon$map, pattern="n/a, ", replacement = "")
-#coordinates <- geocode(cinnamon$map)
-#cinnamon <- cbind(cinnamon, coordinates)
-#cinnamon <- cinnamon %>% 
-#  select(productivity =`_3/crop_productivity_104_cin`, gender = `_0/sex_012`, map = map, lon, lat, org = `_0/farmer_org_014`) %>% 
-#  mutate(comm = c("cinnamon"))
-#
-##data import and wrangling rice--------------------
-#rice <- read_delim("data/04 CSV Legacy - BERAS - ALL.csv", 
-#                                       ";", escape_double = FALSE, trim_ws = TRUE)
-#
-#rice <- rice %>% 
-#  select(country_002, starts_with("work_area"), `_0/village_010`, contains("productivity"), -contains("display"),`_0/farmer_org_014`, `_0/sex_012`) 
-#rice$map <- paste(rice$country_002, rice$work_area_province, rice$work_area_jabar, rice$work_area_jateng, rice$`_0/village_010`, sep = ", ")
-#rice$map <- gsub(x=rice$map, pattern="n/a, ", replacement = "")
-#coordinates <- geocode(rice$map)
-#rice <- cbind(rice, coordinates)
-#rice <- rice %>% 
-#  select(productivity =`_3/VARITAS_BERAS_HITAM/crop_productivity_104_rice_bh`, gender = `_0/sex_012`, map = map, lon, lat, org = `_0/farmer_org_014`) %>% 
-#  mutate(comm = c("rice"))
-#
-##merging datasets---------------
-#data <- rbind(coffee, cacao)
-#data <- rbind(data,cinnamon)
-#data <- rbind(data, rice)
+data$`farmer organisation` <- data$`_0/farmer_org_014`
+
+data$`farmer organisation`[is.na(data$`farmer organisation`)] <- "comparison\n group"
+data$`farmer organisation` <- as.factor(data$`farmer organisation`)
+
+data$commodity <- as.character(data$commodity)
+data$commodity[data$`farmer organisation`=="comparison\n group"] <- "comparison \n commodity"
+data$commodity <- as.factor(data$commodity)
+
+#data import and wrangling coffee--------------------
+
+coffee <- read_delim("data/01 CSV Legacy - KOPI ALL.csv", 
+                                      ";", escape_double = FALSE, na = "n/a", trim_ws = TRUE)
+coffee <- coffee %>% 
+  separate(col = store_gps, into=c("lat","lon","gps3","gps4"),sep= " ")
+
+coffee <- coffee %>% 
+  select(`_uuid`, lat, lon)
+#data import and wrangling cacao--------------------
+cacao <- read_excel("data/02 CSV Legacy - KAKAO ALL.xlsx")                                      
+
+cacao <- cacao %>%
+  separate(col = store_gps, into=c("lat","lon","gps3","gps4"),sep= " ")
+
+cacao <- cacao %>% 
+  select(`_uuid`, lat, lon)
+
+#data import and wrangling cinnamon--------------------
+cinnamon <- read_delim("data/03 CSV Legacy - KULIT MANIS - ALL.csv", 
+                                             ";", escape_double = FALSE, trim_ws = TRUE)
+cinnamon <- cinnamon %>% 
+  separate(col = store_gps, into=c("lat","lon","gps3","gps4"),sep= " ")
+
+cinnamon <- cinnamon %>% 
+  select(`_uuid`, lat, lon)
+
+#data import and wrangling rice--------------------
+rice <- read_delim("data/04 CSV Legacy - BERAS - ALL.csv", 
+                                       ";", escape_double = FALSE, trim_ws = TRUE)
+
+rice <- rice %>% 
+  separate(col = store_gps, into=c("lat","lon","gps3","gps4"),sep= " ")
+
+rice <- rice %>% 
+  select(`_uuid`, lat, lon)
+
+raw <- rbind(rice, coffee)
+raw <- rbind(raw, cacao)
+raw <- rbind(raw, cinnamon)
+data <- merge(data, raw)
+
+#merging datasets---------------
+data$productivity <- as.numeric(data$productivity)
+data$farmland <- as.numeric(data$farmland)
 
 data$age <- data$`_0/age_011`
 data$age <- gsub(data$age, pattern="1", replacement = "Less than or equal to 35 years old")
@@ -167,15 +170,26 @@ data$sex <- gsub(data$sex, pattern="1", replacement="Female")
 data$prod_type_006 <- as.factor(data$prod_type_006)
 data$age <- as.factor(data$age)
 data$sex <- as.factor(data$sex)
-data$`_0/farmer_org_014` <- as.factor(data$`_0/farmer_org_014`)
 
-data <- read_csv("data/data.csv")
 
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="koperasi_", replacement = "")
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="organisasi_", replacement = "")
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="oraganisasi_", replacement = "")
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="lembaga_", replacement = "")
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="koerintji_barokah_bersama", replacement = "barokah")
-data$`_0/farmer_org_014` <- gsub(data$`_0/farmer_org_014`, pattern="_", replacement = " ")
+data <- data %>%
+  mutate(icon = case_when(
+    commodity == "coffee" ~ "1",
+    commodity == "cocoa" ~ "2",
+    commodity == "cinnamon" ~ "3",
+    commodity == "rice" ~ "4",
+    commodity == "comparison \n commodity" ~ "5"))
 
+
+data$id = row.names(data)
+# using original data_all dataframe
+# leaflet using addCirleMarkers and addMArkers
+
+data <- data %>% 
+replace_with_na(replace = list(lat = "n/a", lon = "n/a"))
+
+data$lat <- as.numeric(data$lat)
+data$lon <- as.numeric(data$lon)
+
+data$`Production type` <- data$prod_type_006
 write.csv(data, "data/data.csv", row.names = FALSE)
